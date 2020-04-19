@@ -55,6 +55,9 @@ public class MainClass {
         ringpuffer.addToRing("hallo");
         ringpuffer.addToRing(2.34);
         ringpuffer.addToRing("Welt");
+        ringpuffer.addToRing("oh");
+        ringpuffer.addToRing("damn");
+        ringpuffer.addToRing(420);
         ringpuffer.getPosition();
         ringpuffer.getNoOfElements();
 

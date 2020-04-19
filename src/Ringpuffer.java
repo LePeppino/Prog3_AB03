@@ -70,9 +70,10 @@ public class Ringpuffer<T> implements Deque<T>, RandomAccess, Serializable, Clon
         if(isFull()){
             //check for cases
             if(discarding && fixedCapacity){ //case 1
-                tail = (tail + 1) % capacity;
                 elements.add(element);
                 size += 1;
+                tail = (tail + 1) % capacity;
+                head = (head + 1) % capacity;
                 System.out.println("Overwritten existing element at position " + tail
                         + " with " + element);
             }else if(!discarding && fixedCapacity){ //case 2
@@ -82,24 +83,24 @@ public class Ringpuffer<T> implements Deque<T>, RandomAccess, Serializable, Clon
                 elements.ensureCapacity(capacity);
                 elements.add(element);
                 size += 1;
+                tail = (tail + 1) % capacity;
                 System.out.println("Increased max capacity, adding " + element);
             }
         }else{ //add element normally
-            tail = (tail + 1) % capacity;
             elements.add(element);
             size += 1;
+            tail = (tail + 1) % capacity;
             System.out.println("Added " + element + ".");
         }
     }
 
     public void getPosition(){
-        System.out.println("Position of head: " + getHead()
-                + " and tail: " + getTail());
+        System.out.println("Position of head: " + head + " and tail: " + tail);
     }
 
     public void getNoOfElements(){
         System.out.println("No of Elements in Ringbuffer: "
-                + getSize());
+                + size);
     }
 
     //CLONEABLE
