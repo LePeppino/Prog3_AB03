@@ -25,13 +25,41 @@ public class Ringpuffer<T> implements Deque<T>, RandomAccess, Serializable, Clon
     //Setter/Getter
     private void setHead(int head){ this.head = head; }
     public int getHead(){ return head; }
+
     private void setTail(int tail){ this.tail = tail; }
     public int getTail(){ return tail; }
+
     private void setSize(int size){ this.size = size; }
     public int getSize(){ return size; }
+
     private void setCapacity(int capacity){ this.capacity = capacity; }
     public int getCapacity(){ return capacity; }
 
+    //Helpers
+    public void changeCapacity(Ringpuffer ringpuffer, int capIn){
+        if(capIn > ringpuffer.elements.size()){
+            //set new increased size
+            ringpuffer.elements.ensureCapacity(capIn);
+            ringpuffer.capacity = capIn;
+            System.out.println("Ringbuffer capacity is now " + ringpuffer.getCapacity());
+        }else{
+            System.out.println("Remove elements first?");
+            //ringpuffer.elements.trimToSize();
+        }
+    }
+
+    public void enableFixedCapacity(){ fixedCapacity = true; }
+    public void disableFixedCapacity(){ fixedCapacity = false; }
+    public void enableDiscarding(){ discarding = true; }
+    public void disableDiscarding(){ discarding = false; }
+
+    //Cloneable
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    //Deque
     @Override
     public void addFirst(T t) {
 
