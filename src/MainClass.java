@@ -27,18 +27,15 @@ public class MainClass {
             choice = scanner.nextInt();
             switch(choice) {
                 case 1:
-                    ringpuffer.enableDiscarding();
-                    ringpuffer.enableFixedCapacity();
+                    ringpuffer.enableOverwrite();
                     System.out.println("Enabled overwriting elements at max capacity.");
                     break;
                 case 2:
-                    ringpuffer.disableDiscarding();
-                    ringpuffer.enableFixedCapacity();
+                    ringpuffer.disableNewElements();
                     System.out.println("Not taking new elements at max capacity.");
                     break;
                 case 3:
-                    ringpuffer.disableFixedCapacity();
-                    ringpuffer.disableDiscarding();
+                    ringpuffer.autoIncreaseCap();
                     System.out.println("Enabled increasing max capacity.");
                     break;
                 case 4:
@@ -47,14 +44,19 @@ public class MainClass {
                     ringpuffer.changeCapacity(ringpuffer, capIn);
                     break;
                 case 9:
-                    System.out.println("Exiting...");
+                    System.out.println("Exiting...\n");
                     break;
                 default:
                     System.out.println("Please select an option from above!");
             }
         }
 
-
+        System.out.println("Position of head: " + ringpuffer.getHead()
+                + " and tail: " + ringpuffer.getTail());
+//        ringpuffer.addToRing(21);
+//        ringpuffer.addToRing("hallo");
+//        ringpuffer.addToRing(2.34);
+//        ringpuffer.addToRing("Welt");
 
     }
 }

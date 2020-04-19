@@ -48,10 +48,43 @@ public class Ringpuffer<T> implements Deque<T>, RandomAccess, Serializable, Clon
         }
     }
 
-    public void enableFixedCapacity(){ fixedCapacity = true; }
-    public void disableFixedCapacity(){ fixedCapacity = false; }
-    public void enableDiscarding(){ discarding = true; }
-    public void disableDiscarding(){ discarding = false; }
+    public void enableOverwrite(){
+        fixedCapacity = true;
+        discarding = true;
+    }
+    public void disableNewElements(){
+        fixedCapacity = true;
+        discarding = false;
+    }
+    public void autoIncreaseCap(){
+        fixedCapacity = false;
+        discarding = false;
+    }
+
+    public boolean isFull() {
+        return head == (tail + 1) % capacity;
+    }
+
+    public void addToRing(T element){
+        if(isFull()){
+            //check for cases
+            if(discarding && fixedCapacity){ //case 1
+                tail = (tail + 1) % capacity;
+                System.out.println("Overwriting existing element at position " + getTail() + "...");
+                elements.add(element);
+            }else if(!discarding && fixedCapacity){ //case 2
+                System.out.println("Buffer is full and not taking new elements!");
+            }else if(!fixedCapacity && !discarding){ //case 3
+                System.out.println("Increasing max capacity, adding new element...");
+                capacity += 1;
+                elements.ensureCapacity(capacity);
+                elements.add(element);
+            }
+        }else{ //add element normally
+            tail = (tail + 1) % capacity;
+            elements.add(element);
+        }
+    }
 
     //Cloneable
     @Override
@@ -60,6 +93,11 @@ public class Ringpuffer<T> implements Deque<T>, RandomAccess, Serializable, Clon
     }
 
     //Deque
+    @Override
+    public boolean isEmpty() {
+        return head == tail;
+    }
+
     @Override
     public void addFirst(T t) {
 
@@ -208,11 +246,6 @@ public class Ringpuffer<T> implements Deque<T>, RandomAccess, Serializable, Clon
     @Override
     public int size() {
         return 0;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return false;
     }
 
     @Override
