@@ -14,7 +14,7 @@ public class Ringpuffer<T> implements Deque<T>, RandomAccess, Serializable, Clon
     private int head, tail, size, capacity = 0;
     private boolean fixedCapacity, discarding = false;
 
-    //Constructor
+    //CONSTRUCTOR
     public Ringpuffer(int head, int tail, int size, int capacity){
         setHead(head);
         setTail(tail);
@@ -22,7 +22,8 @@ public class Ringpuffer<T> implements Deque<T>, RandomAccess, Serializable, Clon
         setCapacity(capacity);
         elements = new ArrayList<>(capacity);
     }
-    //Setter/Getter
+
+    //SETTER AND GETTER
     private void setHead(int head){ this.head = head; }
     public int getHead(){ return head; }
 
@@ -33,9 +34,9 @@ public class Ringpuffer<T> implements Deque<T>, RandomAccess, Serializable, Clon
     public int getSize(){ return size; }
 
     private void setCapacity(int capacity){ this.capacity = capacity; }
-    public int getCapacity(){ return capacity; }
+    public int getCapacity(){ return capacity - 1; }
 
-    //Helpers
+    //HELPERS
     public void changeCapacity(Ringpuffer ringpuffer, int capIn){
         if(capIn > ringpuffer.elements.size()){
             //set new increased size
@@ -70,29 +71,44 @@ public class Ringpuffer<T> implements Deque<T>, RandomAccess, Serializable, Clon
             //check for cases
             if(discarding && fixedCapacity){ //case 1
                 tail = (tail + 1) % capacity;
-                System.out.println("Overwriting existing element at position " + getTail() + "...");
                 elements.add(element);
+                size += 1;
+                System.out.println("Overwritten existing element at position " + tail
+                        + " with " + element);
             }else if(!discarding && fixedCapacity){ //case 2
                 System.out.println("Buffer is full and not taking new elements!");
             }else if(!fixedCapacity && !discarding){ //case 3
-                System.out.println("Increasing max capacity, adding new element...");
                 capacity += 1;
                 elements.ensureCapacity(capacity);
                 elements.add(element);
+                size += 1;
+                System.out.println("Increased max capacity, adding " + element);
             }
         }else{ //add element normally
             tail = (tail + 1) % capacity;
             elements.add(element);
+            size += 1;
+            System.out.println("Added " + element + ".");
         }
     }
 
-    //Cloneable
+    public void getPosition(){
+        System.out.println("Position of head: " + getHead()
+                + " and tail: " + getTail());
+    }
+
+    public void getNoOfElements(){
+        System.out.println("No of Elements in Ringbuffer: "
+                + getSize());
+    }
+
+    //CLONEABLE
     @Override
     protected Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 
-    //Deque
+    //DEQUE
     @Override
     public boolean isEmpty() {
         return head == tail;

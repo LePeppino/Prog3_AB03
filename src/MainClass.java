@@ -13,7 +13,7 @@ public class MainClass {
 
         System.out.print("Ringbuffer... Enter max capacity: ");
         int capIn = scanner.nextInt();
-        Ringpuffer ringpuffer = new Ringpuffer(0,0,0, capIn);
+        Ringpuffer ringpuffer = new Ringpuffer(0,0,0, capIn + 1);
         System.out.println("Ringpuffer capacity is now " + ringpuffer.getCapacity());
 
         int choice = 0;
@@ -41,7 +41,7 @@ public class MainClass {
                 case 4:
                     System.out.print("Set new capacity... Enter new max capacity: ");
                     capIn = scanner.nextInt();
-                    ringpuffer.changeCapacity(ringpuffer, capIn);
+                    ringpuffer.changeCapacity(ringpuffer, capIn + 1);
                     break;
                 case 9:
                     System.out.println("Exiting...\n");
@@ -51,12 +51,12 @@ public class MainClass {
             }
         }
 
-        System.out.println("Position of head: " + ringpuffer.getHead()
-                + " and tail: " + ringpuffer.getTail());
-//        ringpuffer.addToRing(21);
-//        ringpuffer.addToRing("hallo");
-//        ringpuffer.addToRing(2.34);
-//        ringpuffer.addToRing("Welt");
+        ringpuffer.addToRing(21);
+        ringpuffer.addToRing("hallo");
+        ringpuffer.addToRing(2.34);
+        ringpuffer.addToRing("Welt");
+        ringpuffer.getPosition();
+        ringpuffer.getNoOfElements();
 
     }
 }
