@@ -4,6 +4,7 @@
  * Semester: SoSe2020
  */
 
+
 import java.util.Scanner;
 
 public class MainClass {
@@ -13,8 +14,8 @@ public class MainClass {
 
         System.out.print("Ringbuffer... Enter max capacity: ");
         int capIn = scanner.nextInt();
-        Ringpuffer ringpuffer = new Ringpuffer(0,0,0, capIn + 1);
-        System.out.println("Ringpuffer capacity is now " + ringpuffer.getCapacity());
+        Ringpuffer<String> ringpuffer = new Ringpuffer<>(0,0,0, capIn);
+        System.out.println("Ringbuffer capacity is now " + ringpuffer.getCapacity());
 
         int choice = 0;
         while(choice != 9) {
@@ -41,7 +42,7 @@ public class MainClass {
                 case 4:
                     System.out.print("Set new capacity... Enter new max capacity: ");
                     capIn = scanner.nextInt();
-                    ringpuffer.changeCapacity(ringpuffer, capIn + 1);
+                    ringpuffer.changeCapacity(capIn);
                     break;
                 case 9:
                     System.out.println("Exiting...\n");
@@ -51,15 +52,19 @@ public class MainClass {
             }
         }
 
-        ringpuffer.addToRing(21);
+        ringpuffer.addToRing("ok");
         ringpuffer.addToRing("hallo");
-        ringpuffer.addToRing(2.34);
+        ringpuffer.addToRing("what");
         ringpuffer.addToRing("Welt");
         ringpuffer.addToRing("oh");
         ringpuffer.addToRing("damn");
-        ringpuffer.addToRing(420);
+        ringpuffer.addToRing("klo");
+        ringpuffer.addToRing("pop");
+
         ringpuffer.getPosition();
         ringpuffer.getNoOfElements();
 
+        ringpuffer.readLikeFIFO();
+        ringpuffer.readLikeLIFO();
     }
 }

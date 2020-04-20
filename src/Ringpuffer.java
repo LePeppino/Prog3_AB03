@@ -4,6 +4,7 @@
  * Semester: SoSe2020
  */
 
+
 import java.io.Serializable;
 import java.util.*;
 
@@ -34,15 +35,15 @@ public class Ringpuffer<T> implements Deque<T>, RandomAccess, Serializable, Clon
     public int getSize(){ return size; }
 
     private void setCapacity(int capacity){ this.capacity = capacity; }
-    public int getCapacity(){ return capacity - 1; }
+    public int getCapacity(){ return capacity; }
 
     //HELPERS
-    public void changeCapacity(Ringpuffer ringpuffer, int capIn){
-        if(capIn > ringpuffer.elements.size()){
+    public void changeCapacity(int capIn){
+        if(capIn > elements.size()){
             //set new increased size
-            ringpuffer.elements.ensureCapacity(capIn);
-            ringpuffer.capacity = capIn;
-            System.out.println("Ringbuffer capacity is now " + ringpuffer.getCapacity());
+            elements.ensureCapacity(capIn);
+            capacity = capIn;
+            System.out.println("Ringbuffer capacity is now " + getCapacity());
         }else{
             System.out.println("Remove elements first?");
             //ringpuffer.elements.trimToSize();
@@ -63,19 +64,17 @@ public class Ringpuffer<T> implements Deque<T>, RandomAccess, Serializable, Clon
     }
 
     public boolean isFull() {
-        return head == (tail + 1) % capacity;
+        return size == capacity; // 'head == (tail + 1) % capacity' does not work
     }
 
     public void addToRing(T element){
         if(isFull()){
             //check for cases
             if(discarding && fixedCapacity){ //case 1
-                elements.add(element);
-                size += 1;
+                elements.set(head, element);
                 tail = (tail + 1) % capacity;
                 head = (head + 1) % capacity;
-                System.out.println("Overwritten existing element at position " + tail
-                        + " with " + element);
+                System.out.println("Overwritten existing element");
             }else if(!discarding && fixedCapacity){ //case 2
                 System.out.println("Buffer is full and not taking new elements!");
             }else if(!fixedCapacity && !discarding){ //case 3
@@ -92,6 +91,26 @@ public class Ringpuffer<T> implements Deque<T>, RandomAccess, Serializable, Clon
             tail = (tail + 1) % capacity;
             System.out.println("Added " + element + ".");
         }
+    }
+
+    public T readLikeFIFO(){
+        if(isEmpty()){
+            System.out.println("Ringbuffer is empty!");
+        }else{
+            head = (head + 1) % capacity;
+            return elements.get(head - 1);
+        }
+        return null;
+    }
+
+    public T readLikeLIFO(){
+        if(isEmpty()){
+            System.out.println("Ringbuffer is empty!");
+        }else{
+            tail = (tail - 1) % capacity;
+            return elements.get(tail + 1);
+        }
+        return null;
     }
 
     public void getPosition(){
@@ -112,7 +131,20 @@ public class Ringpuffer<T> implements Deque<T>, RandomAccess, Serializable, Clon
     //DEQUE
     @Override
     public boolean isEmpty() {
-        return head == tail;
+        return !isFull() && head == tail;
+    }
+
+    @Override
+    public boolean add(T element) {
+        elements.add(element);
+        return true;
+    }
+
+    @Override
+    public void clear() {
+        head = 0;
+        tail = 0;
+
     }
 
     @Override
@@ -186,11 +218,6 @@ public class Ringpuffer<T> implements Deque<T>, RandomAccess, Serializable, Clon
     }
 
     @Override
-    public boolean add(T t) {
-        return false;
-    }
-
-    @Override
     public boolean offer(T t) {
         return false;
     }
@@ -248,11 +275,6 @@ public class Ringpuffer<T> implements Deque<T>, RandomAccess, Serializable, Clon
     @Override
     public boolean retainAll(Collection<?> c) {
         return false;
-    }
-
-    @Override
-    public void clear() {
-
     }
 
     @Override
